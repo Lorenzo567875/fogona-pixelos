@@ -14,28 +14,22 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y git python3 python3-pip openjdk-17-jdk curl
-          mkdir -p ~/bin
-          curl -s https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
-          chmod +x ~/bin/repo
-          echo \"~/bin\" >> $GITHUB_PATH
       
       - name: Sync crDroid source
         run: |
-          cd $HOME
-          mkdir -p crdroid
-          cd crdroid
+          cd 
           repo init -u https://github.com/crdroidandroid/android.git -b 15.0 --depth=1
           repo sync -c -j4 --no-tags
         
       - name: Copy device trees
         run: |
-          cd $HOME/crdroid
-          cp -rf $GITHUB_WORKSPACE/fogona device/motorola/fogona
-          cp -rf $GITHUB_WORKSPACE/sm6225-common device/motorola/sm6225-common
+          cd 
+          cp -rf fogona device/motorola/fogona
+          cp -rf sm6225-common device/motorola/sm6225-common 2>/dev/null || true
         
       - name: Build
         run: |
-          cd $HOME/crdroid
+          cd 
           source build/envsetup.sh
           lunch lineageos_fogona-userdebug
           mka bacon -j4
@@ -44,4 +38,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: crDroid-fogona
-          path: $HOME/crdroid/out/target/product/fogona/*.zip
+          path: /out/target/product/fogona/*.zip
